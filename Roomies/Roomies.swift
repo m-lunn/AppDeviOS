@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct IOS_A3App: App {
+struct Roomies: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

@@ -11,9 +11,9 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		F7288AA82DC4730F001DF4D1 /* IOS_A3 */ = {
+		F7288AA82DC4730F001DF4D1 /* Roomies */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = IOS_A3;
+			path = Roomies;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -32,7 +32,7 @@
 		F7288A9D2DC4730F001DF4D1 = {
 			isa = PBXGroup;
 			children = (
-				F7288AA82DC4730F001DF4D1 /* IOS_A3 */,
+				F7288AA82DC4730F001DF4D1 /* Roomies */,
 				F7288AA72DC4730F001DF4D1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,7 +61,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				F7288AA82DC4730F001DF4D1 /* IOS_A3 */,
+				F7288AA82DC4730F001DF4D1 /* Roomies */,
 			);
 			name = IOS_A3;
 			packageProductDependencies = (
