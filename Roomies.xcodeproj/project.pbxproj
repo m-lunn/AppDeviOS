@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXFileReference section */
-		F7288AA62DC4730F001DF4D1 /* IOS_A3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IOS_A3.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F7288AA62DC4730F001DF4D1 /* Roomies.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Roomies.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -40,7 +40,7 @@
 		F7288AA72DC4730F001DF4D1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				F7288AA62DC4730F001DF4D1 /* IOS_A3.app */,
+				F7288AA62DC4730F001DF4D1 /* Roomies.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -48,9 +48,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		F7288AA52DC4730F001DF4D1 /* IOS_A3 */ = {
+		F7288AA52DC4730F001DF4D1 /* Roomies */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F7288AB42DC47310001DF4D1 /* Build configuration list for PBXNativeTarget "IOS_A3" */;
+			buildConfigurationList = F7288AB42DC47310001DF4D1 /* Build configuration list for PBXNativeTarget "Roomies" */;
 			buildPhases = (
 				F7288AA22DC4730F001DF4D1 /* Sources */,
 				F7288AA32DC4730F001DF4D1 /* Frameworks */,
@@ -63,11 +63,11 @@
 			fileSystemSynchronizedGroups = (
 				F7288AA82DC4730F001DF4D1 /* Roomies */,
 			);
-			name = IOS_A3;
+			name = Roomies;
 			packageProductDependencies = (
 			);
 			productName = IOS_A3;
-			productReference = F7288AA62DC4730F001DF4D1 /* IOS_A3.app */;
+			productReference = F7288AA62DC4730F001DF4D1 /* Roomies.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -99,7 +99,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F7288AA52DC4730F001DF4D1 /* IOS_A3 */,
+				F7288AA52DC4730F001DF4D1 /* Roomies */,
 			);
 		};
 /* End PBXProject section */
@@ -251,7 +251,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"IOS_A3/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Roomies/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -283,7 +283,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"IOS_A3/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "\"Roomies/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -320,7 +320,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		F7288AB42DC47310001DF4D1 /* Build configuration list for PBXNativeTarget "IOS_A3" */ = {
+		F7288AB42DC47310001DF4D1 /* Build configuration list for PBXNativeTarget "Roomies" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				F7288AB52DC47310001DF4D1 /* Debug */,
