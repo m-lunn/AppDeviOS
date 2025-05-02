@@ -1,1 +1,6 @@
+DerivedData/
+*.xcworkspace
+xcuserdata/
 *.xcuserstate
+*.moved-aside
+*.xcscmblueprint
