@@ -6,3 +6,9 @@
 //
 
 import Foundation
+
+struct Split : Identifiable, Codable {
+    var id = UUID()
+    var roommate : Roommate
+    var percentage : Double
+}

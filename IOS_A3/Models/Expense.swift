@@ -6,3 +6,13 @@
 //
 
 import Foundation
+
+struct Expense : Identifiable, Codable {
+    var id = UUID()
+    var title : String
+    var description : String?
+    var amount : Double
+    var payer : Roommate
+    var date : Date
+    var splits : [Split]
+}

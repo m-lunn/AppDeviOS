@@ -7,7 +7,7 @@
 
 import Foundation
 
-class RoommateManager : ObservableObject {
+class RoommateListManager : ObservableObject {
     
     @Published var roommates: [Roommate] = []
     

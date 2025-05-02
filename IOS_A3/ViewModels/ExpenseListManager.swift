@@ -7,7 +7,7 @@
 
 import Foundation
 
-class ExpenseManager : ObservableObject {
+class ExpenseListManager : ObservableObject {
     
     @Published var expenses: [Expense] = []
     
