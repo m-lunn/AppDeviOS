@@ -6,7 +6,14 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		95D95FD42DC4ED6F001E8C54 /* .gitignore in Sources */ = {isa = PBXBuildFile; fileRef = 95D95FD32DC4ED6F001E8C54 /* .gitignore */; };
+		95D95FD62DC4EDA6001E8C54 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 95D95FD52DC4EDA1001E8C54 /* README.md */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		95D95FD32DC4ED6F001E8C54 /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
+		95D95FD52DC4EDA1001E8C54 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		F7288AA62DC4730F001DF4D1 /* Roomies.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Roomies.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -32,6 +39,8 @@
 		F7288A9D2DC4730F001DF4D1 = {
 			isa = PBXGroup;
 			children = (
+				95D95FD32DC4ED6F001E8C54 /* .gitignore */,
+				95D95FD52DC4EDA1001E8C54 /* README.md */,
 				F7288AA82DC4730F001DF4D1 /* Roomies */,
 				F7288AA72DC4730F001DF4D1 /* Products */,
 			);
@@ -109,6 +118,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95D95FD62DC4EDA6001E8C54 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -119,6 +129,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95D95FD42DC4ED6F001E8C54 /* .gitignore in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
