@@ -26,7 +26,7 @@ struct RoomieColors {
     static let background = Color(red : 18/255,  green : 18/255, blue : 18/255)
     
     /// For cards/elevated elements on the background
-    static let elevatedBackground = Color(red : 34/255,  green : 34/255, blue : 34/255)
+    static let elevatedBackground = Color(red : 30/255,  green : 30/255, blue : 30/255)
     
     /// Subtle border/divider color
     static let divider = Color(.systemGray4)
