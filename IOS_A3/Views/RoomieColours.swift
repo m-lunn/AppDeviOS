@@ -48,16 +48,19 @@ struct RoomieColors {
                 ZStack {
                     RoundedRectangle(cornerSize: CGSize(width: 20, height: 20))
                         .fill(RoomieColors.elevatedBackground)
-                    VStack {
+                    VStack (spacing: 20){
+                        Text("More text")
+                            .font(.title2)
+                            .foregroundColor(RoomieColors.text)
                         RoundedRectangle(cornerSize: CGSize(width: 20, height: 20))
                             .fill(RoomieColors.primaryAccent)
                             .frame(width: 300, height: 80)
                         RoundedRectangle(cornerSize: CGSize(width: 20, height: 20))
                             .fill(RoomieColors.secondaryAccent)
                             .frame(width: 300, height: 20)
-                        Text("Positive")
+                        Text("Positive balance")
                             .foregroundColor(RoomieColors.positive)
-                        Text("Negative")
+                        Text("Negative balance")
                             .foregroundColor(RoomieColors.negative)
                         Divider()
                             .overlay(RoomieColors.divider)
