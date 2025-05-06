@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Roommate : Identifiable, Codable {
+struct Roommate : Identifiable, Codable, Hashable {
     var id = UUID()
     var name: String
 }

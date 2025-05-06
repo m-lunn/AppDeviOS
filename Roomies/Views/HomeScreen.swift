@@ -26,7 +26,10 @@ struct HomeScreen: View {
                             .padding(.top, 30)
 
                         VStack(spacing: 15) {
-                            NavigationLink(destination: AddExpenseView()) {
+                            NavigationLink(destination: AddExpenseView(
+                                expenseListManager: expenseListManager,
+                                roommateListManager: roommateListManager
+                            )) {
                                 Text("➕ Add Expense")
                                     .font(.headline)
                                     .foregroundColor(.white)
@@ -36,7 +39,7 @@ struct HomeScreen: View {
                                     .cornerRadius(10)
                             }
 
-                            NavigationLink(destination: ManageRoommatesView()) {
+                            NavigationLink(destination: ManageRoommatesView(roommateListManager: roommateListManager)) {
                                 Text("👥 Manage Roommates")
                                     .font(.headline)
                                     .foregroundColor(.white)
@@ -68,8 +71,6 @@ struct HomeScreen: View {
         }
     }
 }
-
-// ExpenseRow and BalanceRow remain unchanged
 
 struct ExpenseRow: View {
     var expense: Expense

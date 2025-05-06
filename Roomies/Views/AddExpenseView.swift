@@ -8,11 +8,135 @@
 import SwiftUI
 
 struct AddExpenseView: View {
+    @State private var title: String = ""
+    @State private var description: String = ""
+    @State private var amount: String = ""
+    @State private var selectedPayer: Roommate?
+    @State private var selectedSplits: [Roommate: Double] = [:]
+
+    @Environment(\.presentationMode) var presentationMode
+
+    @ObservedObject var expenseListManager: ExpenseListManager
+    @ObservedObject var roommateListManager: RoommateListManager
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        ZStack {
+            RoomieColors.background
+                .ignoresSafeArea()
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text("Add Expense")
+                        .font(.largeTitle)
+                        .bold()
+                        .foregroundColor(RoomieColors.text)
+
+                    // Title
+                    TextField("Title", text: $title)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                    // Description
+                    TextField("Description", text: $description)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                    // Amount
+                    TextField("Amount", text: $amount)
+                        .keyboardType(.decimalPad)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                    // Payer picker
+                    VStack(alignment: .leading) {
+                        Text("Who paid?")
+                            .foregroundColor(RoomieColors.text)
+                        Picker("Payer", selection: $selectedPayer) {
+                            ForEach(roommateListManager.roommates) { roommate in
+                                Text(roommate.name)
+                                    .tag(Optional(roommate))
+                            }
+                        }
+                        .pickerStyle(MenuPickerStyle())
+                        .padding()
+                        .background(RoomieColors.elevatedBackground)
+                        .cornerRadius(10)
+                    }
+
+                    // Splits
+                    VStack(alignment: .leading) {
+                        Text("Split between:")
+                            .foregroundColor(RoomieColors.text)
+                        ForEach(roommateListManager.roommates) { roommate in
+                            HStack {
+                                Text(roommate.name)
+                                    .foregroundColor(RoomieColors.text)
+                                Spacer()
+                                TextField("Percentage", value: Binding(
+                                    get: { selectedSplits[roommate] ?? 0 },
+                                    set: { selectedSplits[roommate] = $0 }
+                                ), formatter: NumberFormatter())
+                                    .keyboardType(.decimalPad)
+                                    .frame(width: 60)
+                                    .textFieldStyle(RoundedBorderTextFieldStyle())
+                                Text("%")
+                                    .foregroundColor(RoomieColors.text)
+                            }
+                        }
+                    }
+
+                    // Save button
+                    Button(action: saveExpense) {
+                        Text("Save Expense")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(RoomieColors.primaryAccent)
+                            .cornerRadius(10)
+                    }
+                }
+                .padding()
+                .background(RoomieColors.elevatedBackground)
+                .cornerRadius(20)
+                .shadow(radius: 10)
+                .padding()
+            }
+        }
+    }
+
+    private func saveExpense() {
+        guard let payer = selectedPayer,
+              let amountValue = Double(amount),
+              amountValue > 0 else {
+            // You can add an alert or validation here if needed
+            return
+        }
+
+        // Build splits array
+        var splitsArray: [Split] = []
+        for (roommate, percentage) in selectedSplits {
+            if percentage > 0 {
+                splitsArray.append(Split(roommate: roommate, percentage: percentage))
+            }
+        }
+
+        let newExpense = Expense(
+            title: title,
+            description: description.isEmpty ? nil : description,
+            amount: amountValue,
+            payer: payer,
+            date: Date(),
+            splits: splitsArray
+        )
+
+        expenseListManager.expenses.append(newExpense)
+        presentationMode.wrappedValue.dismiss()
     }
 }
 
-#Preview {
-    AddExpenseView()
+struct AddExpenseView_Previews: PreviewProvider {
+    static var previews: some View {
+        AddExpenseView(
+            expenseListManager: ExpenseListManager(),
+            roommateListManager: RoommateListManager()
+        )
+    }
 }
