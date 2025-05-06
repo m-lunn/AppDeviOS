@@ -4,7 +4,6 @@
 //
 //  Created by Trevor Mai on 5/5/2025.
 //
-
 import SwiftUI
 
 struct AddExpenseView: View {
@@ -103,10 +102,18 @@ struct AddExpenseView: View {
     }
 
     private func saveExpense() {
+        // Ensure the user has selected a payer and the amount is valid
         guard let payer = selectedPayer,
               let amountValue = Double(amount),
               amountValue > 0 else {
-            // You can add an alert or validation here if needed
+            // You can add an alert or some validation here if needed
+            return
+        }
+
+        // Ensure split percentages add up to 100%
+        let totalPercentage = selectedSplits.values.reduce(0, +)
+        if totalPercentage != 100 {
+            // Show an error message if splits do not add up to 100%
             return
         }
 
@@ -118,6 +125,7 @@ struct AddExpenseView: View {
             }
         }
 
+        // Create the new Expense object
         let newExpense = Expense(
             title: title,
             description: description.isEmpty ? nil : description,
@@ -127,7 +135,10 @@ struct AddExpenseView: View {
             splits: splitsArray
         )
 
+        // Add the new expense to the Expense List Manager
         expenseListManager.expenses.append(newExpense)
+
+        // Dismiss the current view after saving the expense
         presentationMode.wrappedValue.dismiss()
     }
 }
