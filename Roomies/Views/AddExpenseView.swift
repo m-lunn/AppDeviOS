@@ -106,7 +106,6 @@ struct AddExpenseView: View {
         guard let payer = selectedPayer,
               let amountValue = Double(amount),
               amountValue > 0 else {
-            // You can add an alert or some validation here if needed
             return
         }
 

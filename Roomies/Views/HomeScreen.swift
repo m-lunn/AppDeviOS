@@ -13,7 +13,6 @@ struct HomeScreen: View {
     var body: some View {
         NavigationStack {
             ZStack {
-                // Base dark background fills full screen
                 RoomieColors.background
                     .ignoresSafeArea()
 
