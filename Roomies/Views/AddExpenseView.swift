@@ -12,6 +12,9 @@ struct AddExpenseView: View {
     @State private var amount: String = ""
     @State private var selectedPayer: Roommate?
     @State private var selectedSplits: [Roommate: Double] = [:]
+    @State private var amountValid = false
+    @State private var hasSelectedPayer = false
+    @State private var showPercentError = false
 
     @Environment(\.presentationMode) var presentationMode
 
@@ -41,16 +44,35 @@ struct AddExpenseView: View {
                     // Amount
                     TextField("Amount", text: $amount)
                         .keyboardType(.decimalPad)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .textFieldStyle(RoundedBorderTextFieldStyle()).onChange(of: amount) {
+                            if Double(amount) ?? 0
+                                <= 0 {
+                                amountValid = false
+                            } else {
+                                amountValid = true
+                            }
+                        }
+                    
+                    if !amountValid && !amount.isEmpty {
+                        Text("Invalid amount")
+                            .foregroundColor(Color.red)
+                    }
 
                     // Payer picker
                     VStack(alignment: .leading) {
                         Text("Who paid?")
                             .foregroundColor(RoomieColors.text)
-                        Picker("Payer", selection: $selectedPayer) {
-                            ForEach(roommateListManager.roommates) { roommate in
-                                Text(roommate.name)
-                                    .tag(Optional(roommate))
+                        HStack {
+                            if !hasSelectedPayer {
+                                Text("Please select:").foregroundStyle(RoomieColors.text)
+                            }
+                            Picker("Payer", selection: $selectedPayer) {
+                                ForEach(roommateListManager.roommates) { roommate in
+                                    Text(roommate.name)
+                                        .tag(Optional(roommate))
+                                }
+                            }.onChange(of: selectedPayer) {
+                                hasSelectedPayer = true
                             }
                         }
                         .pickerStyle(MenuPickerStyle())
@@ -69,7 +91,7 @@ struct AddExpenseView: View {
                                     .foregroundColor(RoomieColors.text)
                                 Spacer()
                                 TextField("Percentage", value: Binding(
-                                    get: { selectedSplits[roommate] ?? 0 },
+                                    get: { selectedSplits[roommate] ?? getDefaultPercent() },
                                     set: { selectedSplits[roommate] = $0 }
                                 ), formatter: NumberFormatter())
                                     .keyboardType(.decimalPad)
@@ -82,6 +104,12 @@ struct AddExpenseView: View {
                     }
 
                     // Save button
+                    
+                    if showPercentError {
+                        Text("Percents don't equal 100!")
+                            .foregroundColor(Color.red)
+                    }
+                    
                     Button(action: saveExpense) {
                         Text("Save Expense")
                             .font(.headline)
@@ -113,8 +141,12 @@ struct AddExpenseView: View {
         let totalPercentage = selectedSplits.values.reduce(0, +)
         if totalPercentage != 100 {
             // Show an error message if splits do not add up to 100%
+            print("Doesnt equal 100")
+            showPercentError = true
             return
         }
+        
+        showPercentError = false
 
         // Build splits array
         var splitsArray: [Split] = []
@@ -139,6 +171,21 @@ struct AddExpenseView: View {
 
         // Dismiss the current view after saving the expense
         presentationMode.wrappedValue.dismiss()
+    }
+    
+    private func getDefaultPercent() -> Double {
+        // if you have an amount of roommates that gives you a repeating number
+        // i.e. 3 -> 33.3333, it wont add up to 100
+        var roommates = roommateListManager.roommates
+        let roommateCount = roommates.count
+        if (roommateCount < 1) {
+            return 100
+        }
+        var defaultPercent = Double(100/roommateCount)
+        for roommate in roommates {
+            selectedSplits[roommate] = defaultPercent
+        }
+        return defaultPercent
     }
 }
 
