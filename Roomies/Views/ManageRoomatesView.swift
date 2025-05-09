@@ -10,6 +10,9 @@ struct ManageRoommatesView: View {
     @ObservedObject var roommateListManager: RoommateListManager
 
     @State private var newRoommateName: String = ""
+    @State private var editingRoommate: Roommate?
+    @State private var editedName: String = ""
+    @State private var showEditAlert: Bool = false
    
     var body: some View {
         ZStack {
@@ -23,11 +26,50 @@ struct ManageRoommatesView: View {
                     .foregroundColor(RoomieColors.text)
 
                 // Roommates list
-                List(roommateListManager.roommates) { roommate in
-                    Text(roommate.name)
-                        .foregroundColor(.black)
+                ScrollView {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
+                        ForEach(roommateListManager.roommates) { roommate in
+                            VStack(spacing: 10) {
+                                Image(systemName: "person.crop.circle.fill")
+                                    .resizable()
+                                    .frame(width: 50, height: 50)
+                                    .foregroundColor(RoomieColors.primaryAccent)
+
+                                Text(roommate.name)
+                                    .font(.headline)
+                                    .foregroundColor(RoomieColors.text)
+                                    .multilineTextAlignment(.center)
+
+                                HStack(spacing: 16) {
+                                    // Edit
+                                    Button(action: {
+                                        editingRoommate = roommate
+                                        editedName = roommate.name
+                                        showEditAlert = true
+                                    }) {
+                                        Image(systemName: "pencil")
+                                            .foregroundColor(.gray)
+                                    }
+
+                                    // Delete
+                                    Button(action: {
+                                        deleteRoommate(roommate)
+                                    }) {
+                                        Image(systemName: "xmark.circle.fill")
+                                            .foregroundColor(.red)
+                                    }
+                                }
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(RoomieColors.elevatedBackground)
+                            .cornerRadius(15)
+                            .shadow(radius: 5)
+                        }
+                    }
+                    .padding(.horizontal)
                 }
-               
+
                 // Add Roommate Section
                 HStack {
                     TextField("Enter Roommate's Name", text: $newRoommateName)
@@ -47,6 +89,11 @@ struct ManageRoommatesView: View {
             }
             .padding()
         }
+        .alert("Edit Name", isPresented: $showEditAlert, actions: {
+            TextField("Name", text: $editedName)
+            Button("Save", action: updateRoommate)
+            Button("Cancel", role: .cancel, action: {})
+        })
     }
 
     private func addRoommate() {
@@ -59,6 +106,17 @@ struct ManageRoommatesView: View {
 
         // Clear the input field
         newRoommateName = ""
+    }
+
+    private func deleteRoommate(_ roommate: Roommate) {
+        roommateListManager.roommates.removeAll { $0.id == roommate.id }
+    }
+
+    private func updateRoommate() {
+        guard let target = editingRoommate,
+              let index = roommateListManager.roommates.firstIndex(where: { $0.id == target.id }) else { return }
+
+        roommateListManager.roommates[index].name = editedName
     }
 }
 
