@@ -47,6 +47,18 @@ struct HomeScreen: View {
                                     .background(RoomieColors.primaryAccent)
                                     .cornerRadius(10)
                             }
+                            NavigationLink(destination: BalanceSummaryView(
+                                    expenseListManager: expenseListManager,
+                                    roommateListManager: roommateListManager
+                                )) {
+                                    Text("📊 View Balances")
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .frame(maxWidth: .infinity)
+                                        .background(RoomieColors.primaryAccent)
+                                        .cornerRadius(10)
+                                }
                         }
                         .padding(.horizontal)
 

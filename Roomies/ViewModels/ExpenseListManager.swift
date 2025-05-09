@@ -48,4 +48,49 @@ class ExpenseListManager : ObservableObject {
             saveExpenses()
         }
     }
+
+    // Balances calcualte
+    func calculateBalances(roommates: [Roommate]) -> [BalanceInfo] {
+        var paidDict: [UUID: Double] = [:]
+        var owedDict: [UUID: Double] = [:]
+        var balances: [BalanceInfo] = []
+
+        for expense in expenses {
+            paidDict[expense.payer.id, default: 0.0] += expense.amount
+            for split in expense.splits {
+                let owed = expense.amount * (split.percentage / 100)
+                owedDict[split.roommate.id, default: 0.0] += owed
+            }
+        }
+
+        var netBalance: [UUID: Double] = [:]
+        let allIDs = Set(paidDict.keys).union(Set(owedDict.keys))
+        for id in allIDs {
+            let paid = paidDict[id] ?? 0
+            let owed = owedDict[id] ?? 0
+            netBalance[id] = paid - owed
+        }
+
+        var creditors = netBalance.filter { $0.value > 0 }
+        var debtors = netBalance.filter { $0.value < 0 }
+
+        while let debtor = debtors.first(where: { $0.value < 0 }),
+              let creditor = creditors.first(where: { $0.value > 0 }) {
+
+            let payAmount = min(creditor.value, -debtor.value)
+
+            if let from = roommates.first(where: { $0.id == debtor.key }),
+               let to = roommates.first(where: { $0.id == creditor.key }) {
+                balances.append(BalanceInfo(from: from.name, to: to.name, amount: round(payAmount * 100) / 100))
+            }
+
+            creditors[creditor.key]! -= payAmount
+            debtors[debtor.key]! += payAmount
+
+            if abs(creditors[creditor.key]!) < 0.01 { creditors.removeValue(forKey: creditor.key) }
+            if abs(debtors[debtor.key]!) < 0.01 { debtors.removeValue(forKey: debtor.key) }
+        }
+
+        return balances
+    }
 }
