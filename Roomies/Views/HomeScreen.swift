@@ -25,19 +25,6 @@ struct HomeScreen: View {
                             .padding(.top, 30)
 
                         VStack(spacing: 15) {
-                            NavigationLink(destination: AddExpenseView(
-                                expenseListManager: expenseListManager,
-                                roommateListManager: roommateListManager
-                            )) {
-                                Text("➕ Add Expense")
-                                    .font(.headline)
-                                    .foregroundColor(.white)
-                                    .padding()
-                                    .frame(maxWidth: .infinity)
-                                    .background(RoomieColors.primaryAccent)
-                                    .cornerRadius(10)
-                            }
-
                             NavigationLink(destination: ManageRoommatesView(roommateListManager: roommateListManager)) {
                                 Text("👥 Manage Roommates")
                                     .font(.headline)
@@ -47,7 +34,21 @@ struct HomeScreen: View {
                                     .background(RoomieColors.primaryAccent)
                                     .cornerRadius(10)
                             }
-                            NavigationLink(destination: BalanceSummaryView(
+                            if roommateListManager.roommates.count > 0 {
+                                NavigationLink(destination: AddExpenseView(
+                                    expenseListManager: expenseListManager,
+                                    roommateListManager: roommateListManager
+                                )) {
+                                    Text("➕ Add Expense")
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .frame(maxWidth: .infinity)
+                                        .background(RoomieColors.primaryAccent)
+                                        .cornerRadius(10)
+                                }
+                                
+                                NavigationLink(destination: BalanceSummaryView(
                                     expenseListManager: expenseListManager,
                                     roommateListManager: roommateListManager
                                 )) {
@@ -59,6 +60,7 @@ struct HomeScreen: View {
                                         .background(RoomieColors.primaryAccent)
                                         .cornerRadius(10)
                                 }
+                            }
                         }
                         .padding(.horizontal)
 
