@@ -10,9 +10,13 @@ struct ManageRoommatesView: View {
     @ObservedObject var roommateListManager: RoommateListManager
 
     @State private var newRoommateName: String = ""
+    @State private var workingRoommates: [Roommate] = []
     @State private var editingRoommate: Roommate?
     @State private var editedName: String = ""
     @State private var showEditAlert: Bool = false
+    @Environment(\.dismiss) var dismiss
+    @State private var showUnsavedAlert: Bool = false
+    @State private var isDirty: Bool = false
    
     var body: some View {
         ZStack {
@@ -20,15 +24,43 @@ struct ManageRoommatesView: View {
                 .ignoresSafeArea()
 
             VStack(spacing: 20) {
-                Text("Manage Roommates")
-                    .font(.largeTitle)
-                    .bold()
-                    .foregroundColor(RoomieColors.text)
+                HStack {
+                    Button(action: {
+                            if isDirty {
+                                showUnsavedAlert = true
+                            } else {
+                                dismiss()
+                            }
+                        }) {
+                            Image(systemName: "chevron.left")
+                                .font(.title2)
+                                .foregroundColor(RoomieColors.text)
+                        }
+                    Spacer()
+                    Text("Manage Roommates")
+                        .font(.title2)
+                        .bold()
+                        .foregroundColor(RoomieColors.text)
+                    
+                    Spacer()
+                    
+                    Button("Done") {
+                        roommateListManager.roommates = workingRoommates
+                        isDirty = false
+                        dismiss()
+                    }
+                    .foregroundColor(.white)
+                    .padding(.horizontal)
+                    .padding(.vertical, 8)
+                    .background(RoomieColors.primaryAccent)
+                    .cornerRadius(10)
+                }
+                .padding(.horizontal)
 
                 // Roommates list
                 ScrollView {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 20) {
-                        ForEach(roommateListManager.roommates) { roommate in
+                        ForEach(workingRoommates) { roommate in
                             VStack(spacing: 10) {
                                 Image(systemName: "person.crop.circle.fill")
                                     .resizable()
@@ -87,6 +119,9 @@ struct ManageRoommatesView: View {
                 }
                 .padding(.horizontal)
             }
+            .onAppear {
+                self.workingRoommates = roommateListManager.roommates
+            }
             .padding()
         }
         .alert("Edit Name", isPresented: $showEditAlert, actions: {
@@ -94,6 +129,13 @@ struct ManageRoommatesView: View {
             Button("Save", action: updateRoommate)
             Button("Cancel", role: .cancel, action: {})
         })
+        .alert("Unsaved changes will be lost. Are you sure you want to leave?", isPresented: $showUnsavedAlert) {
+            Button("Leave Anyway", role: .destructive) {
+                dismiss()
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+        .navigationBarBackButtonHidden(true)
     }
 
     private func addRoommate() {
@@ -101,21 +143,23 @@ struct ManageRoommatesView: View {
         guard !newRoommateName.isEmpty else { return }
 
         // Add the new roommate to the list
-        roommateListManager.addRoommate(name: newRoommateName)
-
+        let newRoommate = Roommate(id: UUID(), name: newRoommateName)
+        workingRoommates.append(newRoommate)
         // Clear the input field
         newRoommateName = ""
+        isDirty = true
     }
 
     private func deleteRoommate(_ roommate: Roommate) {
-        roommateListManager.roommates.removeAll { $0.id == roommate.id }
+        workingRoommates.removeAll { $0.id == roommate.id }
+        isDirty = true
     }
 
     private func updateRoommate() {
         guard let target = editingRoommate,
-              let index = roommateListManager.roommates.firstIndex(where: { $0.id == target.id }) else { return }
-
-        roommateListManager.roommates[index].name = editedName
+              let index = workingRoommates.firstIndex(where: { $0.id == target.id }) else { return }
+        workingRoommates[index].name = editedName
+        isDirty = true
     }
 }
 
