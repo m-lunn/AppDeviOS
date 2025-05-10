@@ -96,6 +96,15 @@ struct EditExpenseView: View {
                             .background(RoomieColors.primaryAccent)
                             .cornerRadius(10)
                     }
+                    Button(action: removeExpense) {
+                        Text("Remove Expense")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(.red)
+                            .cornerRadius(10)
+                    }
                 }
                 .padding()
                 .background(RoomieColors.elevatedBackground)
@@ -137,17 +146,21 @@ struct EditExpenseView: View {
             .filter { $0.value > 0 }
             .map { Split(roommate: $0.key, percentage: $0.value) }
 
-        // Apply changes via the manager
         expenseDetailManager.updateTitle(title)
         expenseDetailManager.updateDescription(description)
         expenseDetailManager.updateAmount(amountValue)
         expenseDetailManager.updatePayer(payer)
-        expenseDetailManager.updateDate(Date()) // Optionally keep existing date
         for split in updatedSplits {
             expenseDetailManager.updateSplit(for: split.roommate, percentage: split.percentage)
         }
 
         expenseDetailManager.save()
+        expenseListManager.saveExpenses()
+        presentationMode.wrappedValue.dismiss()
+    }
+    
+    private func removeExpense() {
+        expenseListManager.removeExpense(expenseDetailManager.expense)
         presentationMode.wrappedValue.dismiss()
     }
 }

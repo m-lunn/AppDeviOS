@@ -19,6 +19,7 @@ class RoommateListManager : ObservableObject {
     
     func mockInit() {
         roommates = MockData.roommates
+        saveRoommates()
     }
     
     func loadRoommates() {

@@ -32,6 +32,7 @@ class ExpenseListManager : ObservableObject {
     
     func saveExpenses() {
         if let encoded = try? JSONEncoder().encode(expenses) {
+            expenses = expenses
             UserDefaults.standard.set(encoded, forKey: storageKey)
         }
     }

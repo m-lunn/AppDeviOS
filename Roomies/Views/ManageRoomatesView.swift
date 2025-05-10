@@ -101,8 +101,7 @@ struct ManageRoommatesView: View {
         guard !newRoommateName.isEmpty else { return }
 
         // Add the new roommate to the list
-        let newRoommate = Roommate(id: UUID(), name: newRoommateName)
-        roommateListManager.roommates.append(newRoommate)
+        roommateListManager.addRoommate(name: newRoommateName)
 
         // Clear the input field
         newRoommateName = ""

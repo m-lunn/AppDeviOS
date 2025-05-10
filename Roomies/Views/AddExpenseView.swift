@@ -176,12 +176,12 @@ struct AddExpenseView: View {
     private func getDefaultPercent() -> Double {
         // if you have an amount of roommates that gives you a repeating number
         // i.e. 3 -> 33.3333, it wont add up to 100
-        var roommates = roommateListManager.roommates
+        let roommates = roommateListManager.roommates
         let roommateCount = roommates.count
         if (roommateCount < 1) {
             return 100
         }
-        var defaultPercent = Double(100/roommateCount)
+        let defaultPercent = Double(100/roommateCount)
         for roommate in roommates {
             selectedSplits[roommate] = defaultPercent
         }

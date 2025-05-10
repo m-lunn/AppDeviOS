@@ -50,7 +50,7 @@ class ExpenseDetailManager : ObservableObject {
     }
     
     func save() {
-        expenseListManager.saveExpenses()
+        expenseListManager.editExpense(expense)
     }
         
 }
