@@ -7,8 +7,8 @@
 import SwiftUI
 
 struct HomeScreen: View {
-    @ObservedObject var expenseListManager: ExpenseListManager
-    @ObservedObject var roommateListManager: RoommateListManager
+    @EnvironmentObject var expenseListManager: ExpenseListManager
+    @EnvironmentObject var roommateListManager: RoommateListManager
 
     var body: some View {
         NavigationStack {
@@ -47,6 +47,15 @@ struct HomeScreen: View {
                                         .background(RoomieColors.primaryAccent)
                                         .cornerRadius(10)
                                 }
+                                NavigationLink(destination: ExpensesListView().environmentObject(expenseListManager)) {
+                                    Text("📝 Edit Expenses")
+                                        .font(.headline)
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .frame(maxWidth: .infinity)
+                                        .background(RoomieColors.primaryAccent)
+                                        .cornerRadius(10)
+                                }
                                 
                                 NavigationLink(destination: BalanceSummaryView(
                                     expenseListManager: expenseListManager,
@@ -62,20 +71,8 @@ struct HomeScreen: View {
                                 }
                             }
                         }
-                        .padding(.horizontal)
-
-                        ScrollView {
-                            VStack(spacing: 15) {
-                                ForEach(expenseListManager.expenses) { expense in
-                                    ExpenseRow(expense: expense)
-                                }
-                            }
-                            .padding(.horizontal)
-                        }
-                        .padding(.bottom, 30)
                     }
                     .padding()
-                    .background(RoomieColors.elevatedBackground)
                     .cornerRadius(20)
                     .shadow(radius: 10)
                     .padding()
@@ -143,6 +140,15 @@ struct BalanceRow: View {
 
 struct HomeScreen_Previews: PreviewProvider {
     static var previews: some View {
-        HomeScreen(expenseListManager: ExpenseListManager(), roommateListManager: RoommateListManager())
+        
+        let roommateManager = RoommateListManager()
+        roommateManager.mockInit()
+        
+        let expenseListManager = ExpenseListManager()
+        expenseListManager.mockInit()
+        
+        return HomeScreen()
+            .environmentObject(roommateManager)
+            .environmentObject(expenseListManager)
     }
 }

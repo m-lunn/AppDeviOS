@@ -17,6 +17,10 @@ class RoommateListManager : ObservableObject {
         loadRoommates()
     }
     
+    func mockInit() {
+        roommates = MockData.roommates
+    }
+    
     func loadRoommates() {
         if let data = UserDefaults.standard.data(forKey: storageKey),
            let decoded = try? JSONDecoder().decode([Roommate].self, from: data) {

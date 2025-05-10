@@ -11,7 +11,7 @@ class ExpenseDetailManager : ObservableObject {
     
     @Published var expense: Expense
     
-    private var expenseListManager: ExpenseListManager
+    private let expenseListManager: ExpenseListManager
     
     init(expense: Expense, expenseListManager : ExpenseListManager) {
         self.expense = expense

@@ -8,10 +8,15 @@
 import SwiftUI
 
 @main
-struct Roomies: App {
+struct RoomiesApp: App {
+    @StateObject private var expenseListManager = ExpenseListManager()
+    @StateObject private var roommateListManager = RoommateListManager()
+
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            HomeScreen()
+                .environmentObject(expenseListManager)
+                .environmentObject(roommateListManager)
         }
     }
 }

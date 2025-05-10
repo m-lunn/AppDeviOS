@@ -17,6 +17,10 @@ class ExpenseListManager : ObservableObject {
         loadExpenses()
     }
     
+    func mockInit() {
+        expenses = MockData.expenses
+    }
+    
     func loadExpenses() {
         if let data = UserDefaults.standard.data(forKey: storageKey),
            let decoded = try? JSONDecoder().decode([Expense].self, from: data) {
