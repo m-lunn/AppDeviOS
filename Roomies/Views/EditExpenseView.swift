@@ -7,33 +7,31 @@
 
 import SwiftUI
 
-import SwiftUI
-
 struct EditExpenseView: View {
     @EnvironmentObject var expenseListManager: ExpenseListManager
     @EnvironmentObject var roommateListManager: RoommateListManager
-    
+
     @ObservedObject var expenseDetailManager: ExpenseDetailManager
 
     @State private var title: String = ""
     @State private var description: String = ""
     @State private var amount: String = ""
     @State private var selectedPayer: Roommate?
-    @State private var selectedSplits: [Roommate: Double] = [:]
+    @State private var selectedSplits: [UUID: Double] = [:]
     @State private var showPercentError = false
 
     @Environment(\.presentationMode) var presentationMode
 
     var body: some View {
         ZStack {
-            RoomieColors.background
-                .ignoresSafeArea()
+            RoomieColors.background.ignoresSafeArea()
 
             ScrollView {
                 Text("Edit Expense")
                     .font(.largeTitle)
                     .bold()
                     .foregroundColor(RoomieColors.text)
+
                 VStack(alignment: .leading, spacing: 20) {
                     TextField("Title", text: $title)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
@@ -63,20 +61,21 @@ struct EditExpenseView: View {
                     VStack(alignment: .leading) {
                         Text("Split between:")
                             .foregroundColor(RoomieColors.text)
+
                         ForEach(roommateListManager.roommates) { roommate in
                             HStack {
                                 Text(roommate.name)
                                     .foregroundColor(RoomieColors.text)
                                 Spacer()
                                 TextField("Percentage", value: Binding(
-                                    get: { selectedSplits[roommate] ?? 0 },
-                                    set: { selectedSplits[roommate] = $0 }
+                                    get: { selectedSplits[roommate.id] ?? 0 },
+                                    set: { selectedSplits[roommate.id] = $0 }
                                 ), formatter: NumberFormatter())
-                                    .keyboardType(.decimalPad)
-                                    .frame(width: 60)
-                                    .textFieldStyle(RoundedBorderTextFieldStyle())
-                                Text("%")
-                                    .foregroundColor(RoomieColors.text)
+                                .keyboardType(.decimalPad)
+                                .frame(width: 60)
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+
+                                Text("%").foregroundColor(RoomieColors.text)
                             }
                         }
                     }
@@ -95,6 +94,7 @@ struct EditExpenseView: View {
                             .background(RoomieColors.primaryAccent)
                             .cornerRadius(10)
                     }
+
                     Button(action: removeExpense) {
                         Text("Remove Expense")
                             .font(.headline)
@@ -109,7 +109,6 @@ struct EditExpenseView: View {
                 .background(RoomieColors.elevatedBackground)
                 .cornerRadius(20)
                 .shadow(radius: 10)
-
             }
         }
         .onAppear {
@@ -123,7 +122,9 @@ struct EditExpenseView: View {
         self.description = expense.description ?? ""
         self.amount = String(format: "%.2f", expense.amount)
         self.selectedPayer = expense.payer
-        self.selectedSplits = Dictionary(uniqueKeysWithValues: expense.splits.map { ($0.roommate, $0.percentage) })
+        self.selectedSplits = Dictionary(uniqueKeysWithValues: expense.splits.map {
+            ($0.roommate.id, $0.percentage)
+        })
     }
 
     private func saveChanges() {
@@ -141,9 +142,11 @@ struct EditExpenseView: View {
 
         showPercentError = false
 
-        let updatedSplits = selectedSplits
-            .filter { $0.value > 0 }
-            .map { Split(roommate: $0.key, percentage: $0.value) }
+        let updatedSplits = selectedSplits.compactMap { id, percentage in
+            roommateListManager.roommates.first(where: { $0.id == id }).map {
+                Split(roommate: $0, percentage: percentage)
+            }
+        }
 
         expenseDetailManager.updateTitle(title)
         expenseDetailManager.updateDescription(description)
@@ -157,7 +160,7 @@ struct EditExpenseView: View {
         expenseListManager.saveExpenses()
         presentationMode.wrappedValue.dismiss()
     }
-    
+
     private func removeExpense() {
         expenseListManager.removeExpense(expenseDetailManager.expense)
         presentationMode.wrappedValue.dismiss()
