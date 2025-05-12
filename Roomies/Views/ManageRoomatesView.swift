@@ -7,6 +7,7 @@
 import SwiftUI
 
 struct ManageRoommatesView: View {
+    @EnvironmentObject var expenseListManager: ExpenseListManager
     @ObservedObject var roommateListManager: RoommateListManager
 
     @State private var newRoommateName: String = ""
@@ -16,6 +17,7 @@ struct ManageRoommatesView: View {
     @State private var showEditAlert: Bool = false
     @Environment(\.dismiss) var dismiss
     @State private var showUnsavedAlert: Bool = false
+    @State private var showDeleteAlert: Bool = false
     @State private var isDirty: Bool = false
    
     var body: some View {
@@ -86,7 +88,9 @@ struct ManageRoommatesView: View {
 
                                     // Delete
                                     Button(action: {
-                                        deleteRoommate(roommate)
+                                        editingRoommate = roommate
+                                        showDeleteAlert = checkOutstanding(roommate)
+
                                     }) {
                                         Image(systemName: "xmark.circle.fill")
                                             .foregroundColor(.red)
@@ -136,6 +140,10 @@ struct ManageRoommatesView: View {
             }
             Button("Cancel", role: .cancel) {}
         }
+        .alert("Are you sure? Roommate has unpaid debts/is owed money", isPresented: $showDeleteAlert, actions: {
+            Button("Delete", role: .destructive, action: deleteRoommate)
+            Button("Cancel", role: .cancel, action: {})
+        })
         .navigationBarBackButtonHidden(true)
     }
 
@@ -151,6 +159,40 @@ struct ManageRoommatesView: View {
         isDirty = true
     }
 
+    private func checkOutstanding(_ roommate: Roommate) -> Bool {
+        var foundExpenses = 0
+        // we want to check if the roommate either has
+        // outstanding debt of if they are owed anything
+        for expense in expenseListManager.expenses {
+            for split in expense.splits {
+                if (split.roommate == roommate) {
+                    foundExpenses += 1
+                }
+            }
+            if expense.payer == roommate {
+                foundExpenses += 1
+            }
+        }
+        for settlement in expenseListManager.settlements {
+            let name = roommate.name
+            if settlement.from == name || settlement.to == name {
+                foundExpenses -= 1
+            }
+        }
+        if (foundExpenses != 0) {
+            return true
+        }
+        deleteRoommate(roommate)
+        return false
+    }
+    
+    private func deleteRoommate() {
+        if editingRoommate == nil {
+            return
+        }
+        deleteRoommate(editingRoommate!)
+    }
+    
     private func deleteRoommate(_ roommate: Roommate) {
         workingRoommates.removeAll { $0.id == roommate.id }
         isDirty = true
