@@ -123,7 +123,7 @@ class ExpenseListManager : ObservableObject {
               let creditor = creditors.first(where: { $0.value > 0 }) {
 
             let payAmount = min(creditor.value, -debtor.value)
-
+            
             if let from = roommates.first(where: { $0.id == debtor.key }),
                let to = roommates.first(where: { $0.id == creditor.key }) {
                 balances.append(BalanceInfo(

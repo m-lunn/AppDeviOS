@@ -92,7 +92,7 @@ struct AddExpenseView: View {
                                     .foregroundColor(RoomieColors.text)
                                 Spacer()
                                 TextField("Percentage", value: Binding(
-                                    get: { selectedSplits[roommate] ?? getDefaultPercent() },
+                                    get: { selectedSplits[roommate] ?? 0.0 },
                                     set: { selectedSplits[roommate] = $0 }
                                 ), formatter: NumberFormatter())
                                     .keyboardType(.decimalPad)
@@ -125,6 +125,9 @@ struct AddExpenseView: View {
                 .background(RoomieColors.elevatedBackground)
                 .cornerRadius(20)
                 .shadow(radius: 10)
+            }
+            .onAppear() {
+                initialiseSplits()
             }
         }
     }
@@ -173,21 +176,30 @@ struct AddExpenseView: View {
         presentationMode.wrappedValue.dismiss()
     }
     
-    private func getDefaultPercent() -> Double {
-        // if you have an amount of roommates that gives you a repeating number
-        // i.e. 3 -> 33.3333, it wont add up to 100
+    /// This func initalises the splits for a new expense accounting for the fact that e.g. repeated decimal split won't add to 100 by
+    private func initialiseSplits() {
         let roommates = roommateListManager.roommates
+        guard !roommates.isEmpty else { return }
+
         let roommateCount = roommates.count
-        if (roommateCount < 1) {
-            return 100
+        /// Finds the base percentage split evenly among all roommates rounded to 2 decimal places
+        let basePercent = round((100.0 / Double(roommateCount)) * 100.0) / 100.0
+
+        selectedSplits = [:]
+        var total = 0.0
+        
+        /// To ensure the splits add up to exactly 100, the final split is given the remainder once the value of the initial splits are taken off. (e.g. 100/3 = 33.33 + 33.33 + 33.34)
+        for i in 0..<roommates.count {
+            if i == roommates.count - 1 {
+                selectedSplits[roommates[i]] = round((100.0 - total) * 100.0) / 100.0
+            } else {
+                selectedSplits[roommates[i]] = basePercent
+                total += basePercent
+            }
         }
-        let defaultPercent = Double(100/roommateCount)
-        for roommate in roommates {
-            selectedSplits[roommate] = defaultPercent
-        }
-        return defaultPercent
     }
 }
+
 
 struct AddExpenseView_Previews: PreviewProvider {
     static var previews: some View {
