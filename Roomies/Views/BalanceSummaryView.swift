@@ -1,27 +1,26 @@
 import SwiftUI
 
 struct BalanceSummaryView: View {
-    @ObservedObject var expenseListManager: ExpenseListManager
-    @ObservedObject var roommateListManager: RoommateListManager
-
+    @EnvironmentObject var expenseListManager: ExpenseListManager
+    @EnvironmentObject var roommateListManager: RoommateListManager
+    
     var body: some View {
         ZStack {
             RoomieColors.background
                 .ignoresSafeArea()
 
             ScrollView {
+                Text("Balance Summary")
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundColor(RoomieColors.text)
                 VStack(spacing: 20) {
-                    Text("Settlement Summary")
-                        .font(.largeTitle)
-                        .bold()
-                        .foregroundColor(RoomieColors.text)
-
-                    if expenseListManager.expenses.isEmpty || roommateListManager.roommates.isEmpty {
-                        Text("No data to display")
+                    if expenseListManager.calculateBalances(roommates: roommateListManager.roommates).isEmpty {
+                        Text("No balances to display. All settled up.")
                             .foregroundColor(.gray)
                             .padding()
                     } else {
-                        VStack(spacing: 15) {
+                        VStack() {
                             ForEach(expenseListManager.calculateBalances(roommates: roommateListManager.roommates)) { balance in
                                 HStack {
                                     VStack(alignment: .leading, spacing: 4) {
@@ -31,28 +30,71 @@ struct BalanceSummaryView: View {
                                             .font(.headline)
                                             .foregroundColor(RoomieColors.text)
                                     }
-
                                     Spacer()
-
                                     Text("$\(String(format: "%.2f", balance.amount))")
                                         .fontWeight(.bold)
                                         .foregroundColor(.red)
                                 }
+                                .frame(maxWidth: .infinity, alignment: .leading)
                                 .padding()
                                 .background(RoomieColors.elevatedBackground)
-                                .cornerRadius(15)
-                                .shadow(radius: 5)
+                                .cornerRadius(12)
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .stroke(RoomieColors.divider, lineWidth: 1)
+                                )
+                                Button(action: {
+                                    expenseListManager.createSettlement(from: balance.from, to: balance.to, amount: balance.amount)
+                                }) {
+                                    Text("Mark As Paid")
+                                        .frame(maxWidth: .infinity)
+                                        .foregroundColor(.white)
+                                        .fontWeight(.bold)
+                                        .padding(.horizontal)
+                                        .padding(.vertical, 10)
+                                        .background(RoomieColors.positive)
+                                        .cornerRadius(8)
+                                }
+                                Spacer()
+                                    .frame(height: 20)
                             }
                         }
-                        .padding(.horizontal)
+
+                    }
+                    Spacer()
+                    NavigationLink(destination: PaidSettlementsView()) {
+                        Text("View Paid Settlements")
+                            .font(.headline)
+                            .foregroundColor(RoomieColors.secondaryAccent)
+                            .padding()
+                            .background(RoomieColors.elevatedBackground)
+                            .cornerRadius(12)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .stroke(RoomieColors.divider, lineWidth: 1)
+                            )
                     }
                 }
                 .padding()
-                .background(RoomieColors.elevatedBackground)
-                .cornerRadius(20)
-                .shadow(radius: 10)
-                .padding()
+                .background(RoomieColors.background)
             }
         }
     }
 }
+
+#Preview {
+    let roommateListManager = RoommateListManager()
+    roommateListManager.mockInit()
+
+    let expenseListManager = ExpenseListManager()
+    expenseListManager.mockInit()
+
+    return NavigationStack {
+        BalanceSummaryView()
+            .environmentObject(roommateListManager)
+            .environmentObject(expenseListManager)
+            .navigationBarBackButtonHidden(false)
+    }
+}
+
+

@@ -30,12 +30,11 @@ struct EditExpenseView: View {
                 .ignoresSafeArea()
 
             ScrollView {
+                Text("Edit Expense")
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundColor(RoomieColors.text)
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("Edit Expense")
-                        .font(.largeTitle)
-                        .bold()
-                        .foregroundColor(RoomieColors.text)
-
                     TextField("Title", text: $title)
                         .textFieldStyle(RoundedBorderTextFieldStyle())
 
@@ -110,7 +109,7 @@ struct EditExpenseView: View {
                 .background(RoomieColors.elevatedBackground)
                 .cornerRadius(20)
                 .shadow(radius: 10)
-                .padding()
+
             }
         }
         .onAppear {

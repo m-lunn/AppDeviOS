@@ -1,7 +1,7 @@
 import Foundation
 
-struct BalanceInfo: Identifiable {
-    let id = UUID()
+struct BalanceInfo: Identifiable, Codable, Equatable {
+    var id = UUID()
     let from: String
     let to: String
     let amount: Double

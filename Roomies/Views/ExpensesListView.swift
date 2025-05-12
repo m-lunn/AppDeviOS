@@ -27,7 +27,7 @@ struct ExpensesListView: View {
                     
                 ScrollView {
                     VStack(spacing: 15) {
-                        ForEach(expenseListManager.expenses) { expense in
+                        ForEach(expenseListManager.expenses.sorted(by: { $0.date > $1.date })) { expense in
                             ExpenseRowView(expense: expense)
                                 .environmentObject(expenseListManager)
                         }

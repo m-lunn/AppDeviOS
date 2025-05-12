@@ -35,10 +35,7 @@ struct HomeScreen: View {
                                     .cornerRadius(10)
                             }
                             if roommateListManager.roommates.count > 0 {
-                                NavigationLink(destination: AddExpenseView(
-                                    expenseListManager: expenseListManager,
-                                    roommateListManager: roommateListManager
-                                )) {
+                                NavigationLink(destination: AddExpenseView()) {
                                     Text("➕ Add Expense")
                                         .font(.headline)
                                         .foregroundColor(.white)
@@ -47,7 +44,7 @@ struct HomeScreen: View {
                                         .background(RoomieColors.primaryAccent)
                                         .cornerRadius(10)
                                 }
-                                NavigationLink(destination: ExpensesListView().environmentObject(expenseListManager)) {
+                                NavigationLink(destination: ExpensesListView()) {
                                     Text("📝 Edit Expenses")
                                         .font(.headline)
                                         .foregroundColor(.white)
@@ -57,10 +54,7 @@ struct HomeScreen: View {
                                         .cornerRadius(10)
                                 }
                                 
-                                NavigationLink(destination: BalanceSummaryView(
-                                    expenseListManager: expenseListManager,
-                                    roommateListManager: roommateListManager
-                                )) {
+                                NavigationLink(destination: BalanceSummaryView()) {
                                     Text("📊 View Balances")
                                         .font(.headline)
                                         .foregroundColor(.white)
@@ -79,25 +73,6 @@ struct HomeScreen: View {
                 }
             }
         }
-    }
-}
-
-struct ExpenseRow: View {
-    var expense: Expense
-
-    var body: some View {
-        HStack {
-            Text(expense.title)
-                .font(.headline)
-                .foregroundColor(RoomieColors.text)
-            Spacer()
-            Text("$\(String(format: "%.2f", expense.amount))")
-                .foregroundColor(RoomieColors.text)
-        }
-        .padding()
-        .background(RoomieColors.elevatedBackground)
-        .cornerRadius(15)
-        .shadow(radius: 5)
     }
 }
 

@@ -46,6 +46,7 @@ struct ManageRoommatesView: View {
                     
                     Button("Done") {
                         roommateListManager.roommates = workingRoommates
+                        roommateListManager.saveRoommates()
                         isDirty = false
                         dismiss()
                     }

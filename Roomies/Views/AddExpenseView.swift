@@ -18,8 +18,8 @@ struct AddExpenseView: View {
 
     @Environment(\.presentationMode) var presentationMode
 
-    @ObservedObject var expenseListManager: ExpenseListManager
-    @ObservedObject var roommateListManager: RoommateListManager
+    @EnvironmentObject var expenseListManager: ExpenseListManager
+    @EnvironmentObject var roommateListManager: RoommateListManager
 
     var body: some View {
         ZStack {
@@ -27,11 +27,12 @@ struct AddExpenseView: View {
                 .ignoresSafeArea()
 
             ScrollView {
+                Text("Add Expense")
+                    .font(.largeTitle)
+                    .bold()
+                    .foregroundColor(RoomieColors.text)
                 VStack(alignment: .leading, spacing: 20) {
-                    Text("Add Expense")
-                        .font(.largeTitle)
-                        .bold()
-                        .foregroundColor(RoomieColors.text)
+
 
                     // Title
                     TextField("Title", text: $title)
@@ -124,7 +125,6 @@ struct AddExpenseView: View {
                 .background(RoomieColors.elevatedBackground)
                 .cornerRadius(20)
                 .shadow(radius: 10)
-                .padding()
             }
         }
     }
@@ -167,7 +167,7 @@ struct AddExpenseView: View {
         )
 
         // Add the new expense to the Expense List Manager
-        expenseListManager.expenses.append(newExpense)
+        expenseListManager.addExpense(newExpense)
 
         // Dismiss the current view after saving the expense
         presentationMode.wrappedValue.dismiss()
@@ -191,9 +191,8 @@ struct AddExpenseView: View {
 
 struct AddExpenseView_Previews: PreviewProvider {
     static var previews: some View {
-        AddExpenseView(
-            expenseListManager: ExpenseListManager(),
-            roommateListManager: RoommateListManager()
-        )
+        AddExpenseView()
+            .environmentObject(RoommateListManager())
+            .environmentObject(ExpenseListManager())
     }
 }

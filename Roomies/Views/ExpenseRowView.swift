@@ -33,7 +33,7 @@ struct ExpenseRowView: View {
 
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
-            .background(RoomieColors.background)
+            .background(RoomieColors.elevatedBackground)
             .cornerRadius(12)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
